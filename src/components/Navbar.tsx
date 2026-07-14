@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
-import { ChevronRight, ArrowUpRight, Search } from "lucide-react";
+import { ChevronRight, ArrowUpRight, Search, User } from "lucide-react";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 interface NavbarProps {
   searchQuery: string;
@@ -8,6 +9,12 @@ interface NavbarProps {
 }
 
 export default function Navbar({ searchQuery, setSearchQuery }: NavbarProps) {
+  const [hasToken, setHasToken] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("admin_token");
+    setHasToken(!!token);
+  }, []);
   const menuItems = [
     { name: "Locations", target: "ready-to-book" },
     { name: "Amenities", target: "amenities" },
@@ -87,6 +94,17 @@ export default function Navbar({ searchQuery, setSearchQuery }: NavbarProps) {
           />
           <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-white/70" />
         </div>
+
+        {hasToken ? (
+          <Link href="/requests" className="hidden sm:flex items-center gap-1.5 text-white/90 hover:text-white transition-colors text-xs md:text-sm font-medium mr-2">
+            <User size={16} />
+            Requests
+          </Link>
+        ) : (
+          <Link href="/login" className="hidden sm:block text-white/80 hover:text-white transition-colors text-xs md:text-sm font-medium mr-2">
+            Owner Login
+          </Link>
+        )}
 
         <motion.button
           whileHover={{ scale: 1.02 }}

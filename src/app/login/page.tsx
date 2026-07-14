@@ -4,33 +4,53 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, Phone, ArrowRight, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
-  const [isLogin, setIsLogin] = useState(true);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     email: "",
-    mobile: "",
     password: ""
   });
 
-  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Only allow numbers
-    const value = e.target.value.replace(/[^0-9]/g, "");
-    setFormData({ ...formData, mobile: value });
-  };
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isLogin) {
-      console.log("Logging in with:", formData.email, formData.password);
-      // Implement login API call here
-    } else {
-      console.log("Registering with:", formData);
-      // Implement registration API call here
+    setLoading(true);
+    setError("");
+    
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://pgms-nu.vercel.app/api";
+      const res = await fetch(`${baseUrl}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || "Login failed");
+      }
+      
+      // Save token (assuming data.user.token or data.token exists)
+      const token = data.user?.token || data.token;
+      if (token) {
+        localStorage.setItem("admin_token", token);
+        router.push("/requests");
+      } else {
+        throw new Error("No token received");
+      }
+    } catch (err: any) {
+      setError(err.message || "An error occurred");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,14 +75,18 @@ export default function LoginPage() {
             P
           </div>
           <h2 className="text-3xl font-heading font-bold text-forest">
-            {isLogin ? "Welcome Back" : "Create Account"}
+            PG Owner Login
           </h2>
           <p className="text-forest/60 mt-2">
-            {isLogin 
-              ? "Sign in to manage your bookings and saved properties." 
-              : "Join PGMS to find your perfect home away from home."}
+            Sign in to manage your tenant visit requests and properties.
           </p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 text-red-600 border border-red-100 rounded-xl text-sm text-center">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
@@ -81,37 +105,9 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <AnimatePresence mode="popLayout">
-            {!isLogin && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-1"
-              >
-                <label className="text-sm font-medium text-forest/80 ml-1">Mobile Number</label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-forest/40" size={18} />
-                  <input 
-                    type="tel" 
-                    name="mobile"
-                    value={formData.mobile}
-                    onChange={handleMobileChange}
-                    required={!isLogin}
-                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-forest/10 focus:border-terracotta focus:ring-2 focus:ring-terracotta/20 outline-none transition-all text-forest placeholder:text-forest/40"
-                    placeholder="Enter your 10-digit number"
-                    maxLength={10}
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           <div className="space-y-1">
             <div className="flex justify-between items-center ml-1">
               <label className="text-sm font-medium text-forest/80">Password</label>
-              {isLogin && <a href="#" className="text-xs text-terracotta hover:underline">Forgot password?</a>}
             </div>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-forest/40" size={18} />
@@ -129,22 +125,13 @@ export default function LoginPage() {
 
           <button 
             type="submit"
-            className="w-full bg-forest text-white py-3.5 rounded-xl font-medium mt-6 hover:bg-forest/90 transition-colors shadow-lg shadow-forest/20 flex items-center justify-center gap-2 group"
+            disabled={loading}
+            className="w-full bg-forest text-white py-3.5 rounded-xl font-medium mt-6 hover:bg-forest/90 transition-colors shadow-lg shadow-forest/20 flex items-center justify-center gap-2 group disabled:opacity-70"
           >
-            {isLogin ? "Sign In" : "Create Account"}
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            {loading ? "Signing In..." : "Sign In"}
+            {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
           </button>
         </form>
-
-        <div className="mt-8 text-center text-sm text-forest/60">
-          {isLogin ? "Don't have an account?" : "Already have an account?"}
-          <button 
-            onClick={() => setIsLogin(!isLogin)}
-            className="ml-2 text-terracotta font-medium hover:underline focus:outline-none"
-          >
-            {isLogin ? "Sign up" : "Sign in"}
-          </button>
-        </div>
       </motion.div>
     </div>
   );
