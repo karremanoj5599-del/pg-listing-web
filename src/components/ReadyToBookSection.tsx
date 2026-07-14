@@ -13,6 +13,7 @@ const fallbackProperties = [
     price: "₹8,500/mo",
     rating: 4.8,
     location: "Hitech City, Hyderabad",
+    googleMapUrl: "https://maps.app.goo.gl/Tfj9Rfzx4e89GSXp7",
     image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80",
     amenities: [<Wifi key="1" size={16} />, <Utensils key="2" size={16} />, <Droplets key="3" size={16} />],
     rawPricing: [
@@ -27,6 +28,7 @@ const fallbackProperties = [
     price: "₹12,000/mo",
     rating: 4.9,
     location: "Madhapur, Hyderabad",
+    googleMapUrl: "https://maps.app.goo.gl/Tfj9Rfzx4e89GSXp7",
     image: "https://images.unsplash.com/photo-1502672260266-1c1e8741a804?auto=format&fit=crop&w=600&q=80",
     amenities: [<Wifi key="1" size={16} />, <Utensils key="2" size={16} />, <BedDouble key="3" size={16} />],
     rawPricing: [
@@ -41,6 +43,7 @@ const fallbackProperties = [
     price: "₹9,500/mo",
     rating: 4.7,
     location: "Gachibowli, Hyderabad",
+    googleMapUrl: null,
     image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80",
     amenities: [<Wifi key="1" size={16} />, <Utensils key="2" size={16} />, <Droplets key="3" size={16} />],
     rawPricing: [
@@ -79,6 +82,7 @@ export default function ReadyToBookSection({ searchQuery = "" }: ReadyToBookProp
             price: p.pricing && p.pricing.length > 0 ? `₹${p.pricing[0].price}/mo` : "Contact for price",
             rating: 4.8,
             location: p.address || "Hyderabad",
+            googleMapUrl: p.google_map_url || null,
             image: p.primary_image || "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80",
             amenities: [<Wifi key="1" size={16} />, <Utensils key="2" size={16} />, <BedDouble key="3" size={16} />],
             rawPricing: p.pricing || []

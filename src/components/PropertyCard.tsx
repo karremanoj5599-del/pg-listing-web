@@ -13,6 +13,7 @@ interface PropertyCardProps {
     price: string;
     rating: number;
     location: string;
+    googleMapUrl?: string | null;
     image: string;
     amenities: React.ReactNode[];
   };
@@ -98,9 +99,21 @@ export default function PropertyCard({ property, index }: PropertyCardProps) {
               <h3 className="font-heading font-bold text-lg text-forest group-hover:text-terracotta transition-colors">{property.name}</h3>
               <p className="font-bold text-terracotta bg-terracotta/10 px-2 py-1 rounded-lg">{property.price}</p>
             </div>
-            <p className="text-sm text-forest/60 mb-4 flex items-center gap-1" style={{ transform: "translateZ(20px)" }}>
-              <MapPin size={14} /> {property.location}
-            </p>
+            <div 
+              className="text-sm text-forest/60 mb-4 flex items-center gap-1 w-fit z-20 relative transition-colors" 
+              style={{ transform: "translateZ(20px)" }}
+              onClick={(e) => {
+                if (property.googleMapUrl) {
+                  e.preventDefault();
+                  window.open(property.googleMapUrl, "_blank", "noopener,noreferrer");
+                }
+              }}
+            >
+              <MapPin size={14} className={property.googleMapUrl ? "text-terracotta" : ""} /> 
+              <span className={property.googleMapUrl ? "underline decoration-dotted cursor-pointer hover:text-terracotta transition-colors" : ""}>
+                {property.location}
+              </span>
+            </div>
             <div className="mt-auto pt-4 border-t border-forest/5 flex items-center justify-between" style={{ transform: "translateZ(40px)" }}>
               <div className="flex gap-2 text-forest/40">
                 {property.amenities.map((icon, i) => (
