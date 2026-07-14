@@ -62,7 +62,8 @@ export default function ReadyToBookSection({ searchQuery = "" }: ReadyToBookProp
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/public/properties");
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://pgms-nu.vercel.app/api";
+        const res = await fetch(`${baseUrl}/public/properties`);
         if (!res.ok) {
           console.warn("API returned non-ok status, falling back to mock data.");
           setProperties(fallbackProperties);
