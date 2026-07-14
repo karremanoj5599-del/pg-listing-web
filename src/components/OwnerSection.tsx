@@ -55,22 +55,13 @@ export default function OwnerSection() {
           </p>
 
           <div className="pt-4 flex flex-wrap gap-4">
-            <Link href="/login">
+            <Link href="/login?register=true">
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 className="bg-terracotta text-white font-semibold px-8 py-4 rounded-full flex items-center gap-3 shadow-lg shadow-terracotta/20 hover:bg-[#d06b50] transition-colors"
               >
-                Access Owner Portal <ArrowRight className="w-5 h-5" />
-              </motion.button>
-            </Link>
-            <Link href="/login?register=true">
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="border border-white/20 bg-white/5 text-white font-medium px-8 py-4 rounded-full hover:bg-white/10 transition-colors"
-              >
-                Register Property
+                Register Property <ArrowRight className="w-5 h-5" />
               </motion.button>
             </Link>
           </div>
