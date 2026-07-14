@@ -33,6 +33,7 @@ export default function PropertyDetails() {
           price: data.pricing && data.pricing.length > 0 ? `₹${data.pricing[0].price}` : "Contact for price",
           rating: 4.8,
           location: data.address || "Hyderabad",
+          googleMapUrl: data.google_map_url || null,
           description: data.about || "Experience premium living in the heart of the city. Our property offers state-of-the-art amenities, round-the-clock security, and a vibrant community.",
           images: data.images && data.images.length > 0 
             ? data.images.map((img: any) => img.image_url) 
@@ -147,9 +148,21 @@ export default function PropertyDetails() {
               <span className="flex items-center gap-1 text-sm font-bold text-forest bg-yellow-400/20 px-3 py-1 rounded-full"><Star size={14} className="fill-yellow-500 text-yellow-500"/> {property.rating} Excellent</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-forest mb-4">{property.name}</h1>
-            <p className="text-forest/60 flex items-center gap-2 text-lg">
-              <MapPin size={20} className="text-terracotta" /> {property.location}
-            </p>
+            {property.googleMapUrl ? (
+              <a 
+                href={property.googleMapUrl} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-forest/60 hover:text-terracotta transition-colors flex items-center gap-2 text-lg group w-fit"
+              >
+                <MapPin size={20} className="text-terracotta group-hover:scale-110 transition-transform" /> 
+                <span className="underline decoration-dotted">{property.location}</span>
+              </a>
+            ) : (
+              <p className="text-forest/60 flex items-center gap-2 text-lg">
+                <MapPin size={20} className="text-terracotta" /> {property.location}
+              </p>
+            )}
           </motion.div>
 
           <div className="h-px bg-forest/10 w-full" />
