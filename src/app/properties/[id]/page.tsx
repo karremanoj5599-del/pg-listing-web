@@ -57,15 +57,15 @@ export default function PropertyDetails() {
     setSubmittingForm(true);
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://pgms-nu.vercel.app/api";
-      const res = await fetch(`${baseUrl}/public/book-visit`, {
+      const res = await fetch(`${baseUrl}/public/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: formData.name,
-          phone: formData.phone,
-          visit_date: formData.visitDate,
-          purpose: "Listing Site Booking Visit",
-          email: `${formData.name.toLowerCase().replace(/\s+/g, '')}@example.com`
+          property_id: property?.id ? parseInt(property.id) : parseInt(id),
+          visitor_name: formData.name,
+          mobile: formData.phone,
+          expected_date: formData.visitDate,
+          type: "Visit"
         })
       });
       if (res.ok) {
