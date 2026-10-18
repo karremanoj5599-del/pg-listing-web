@@ -31,7 +31,7 @@ function LoginContent() {
     setSuccess("");
     
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://pgms-nu.vercel.app/api";
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api";
       const endpoint = isRegister ? "/auth/register" : "/auth/login";
       
       // Build request body

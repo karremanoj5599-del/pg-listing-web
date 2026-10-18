@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Wifi, Utensils, Droplets, BedDouble } from "lucide-react";
+import Link from "next/link";
+import { Wifi, Utensils, Droplets, BedDouble, ArrowRight } from "lucide-react";
 import PropertyCard from "./PropertyCard";
 
 // Mock data fallback if API fails
@@ -65,7 +66,7 @@ export default function ReadyToBookSection({ searchQuery = "" }: ReadyToBookProp
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://pgms-nu.vercel.app/api";
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api";
         const res = await fetch(`${baseUrl}/public/properties`);
         if (!res.ok) {
           console.warn("API returned non-ok status, falling back to mock data.");
@@ -103,7 +104,7 @@ export default function ReadyToBookSection({ searchQuery = "" }: ReadyToBookProp
 
   const filteredProperties = properties.filter(p => {
     // 1. Gender filter
-    if (filterType === "MWn" && p.type !== "Mens") return false;
+    if (filterType === "Men" && p.type !== "Mens") return false;
     if (filterType === "Women" && p.type !== "Womens") return false;
     if (filterType === "Co-living" && p.type !== "Co-ed") return false;
 
@@ -174,7 +175,7 @@ export default function ReadyToBookSection({ searchQuery = "" }: ReadyToBookProp
 
         {/* Dynamic Filters */}
         <div className="flex flex-wrap gap-2.5">
-          {["All", "MWn", "Women", "Co-living"].map((type) => (
+          {["All", "Men", "Women", "Co-living"].map((type) => (
             <button
               key={type}
               onClick={() => setFilterType(type)}
@@ -184,7 +185,7 @@ export default function ReadyToBookSection({ searchQuery = "" }: ReadyToBookProp
                   : "bg-white/60 text-[rgba(20,40,75,0.8)] border border-white/20 hover:bg-white backdrop-blur-md"
               }`}
             >
-              {type === "MWn" ? "Men" : type === "Co-living" ? "Co-living" : type}
+              {type}
             </button>
           ))}
         </div>
@@ -205,6 +206,16 @@ export default function ReadyToBookSection({ searchQuery = "" }: ReadyToBookProp
             <PropertyCard key={property.id} property={property} index={idx} />
           ))
         )}
+      </div>
+
+      {/* Explore All Properties Button */}
+      <div className="mt-12 text-center">
+        <Link href="/properties">
+          <button className="bg-white/80 hover:bg-white text-forest border border-forest/15 px-8 py-3.5 rounded-full font-bold text-sm shadow-md hover:shadow-xl transition-all inline-flex items-center gap-2 group">
+            <span>Explore All Properties & Filters (Sharing, Budget, Amenities)</span>
+            <ArrowRight size={16} className="text-terracotta group-hover:translate-x-1 transition-transform" />
+          </button>
+        </Link>
       </div>
     </section>
   );
